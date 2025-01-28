@@ -11,21 +11,12 @@ class Rocket extends Phaser.GameObjects.Sprite {
 	  this.scene = scene
 	  //define mouse control mode
 	  this.mouse = game.settings.mouseMode
-
-	  this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-		this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5)
-		this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5)
-		this.gameOver = true
-	}, null, this)
-	  //could do this.timer = game.seetings.gameTimer for a mechanic that takes away timer for missing and gives time for hitting
-	  //put take away points in the reset on miss if statement
-	  //do the same thing in Play.js but inside the rocket collision statements.
+		
 	}
 
 
 	update(){
 		
-		console.log(this.timer)
 		//mouse controls
 		const pointer = this.scene.input.activePointer;
 		if (this.mouse == true){
@@ -59,6 +50,8 @@ class Rocket extends Phaser.GameObjects.Sprite {
 		if (this.y <= borderUISize * 3 + borderPadding){
 			this.isFiring = false
 			this.y = game.config.height - borderUISize - borderPadding
+			this.scene.adjustTimer(-10000)
+
 	 
 		}
 	}
@@ -67,5 +60,6 @@ class Rocket extends Phaser.GameObjects.Sprite {
 	reset(){
 		this.isFiring = false;
 		this.y = game.config.height - borderUISize - borderPadding;
+
 	}
   }

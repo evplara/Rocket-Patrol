@@ -45,12 +45,33 @@ class Play extends Phaser.Scene {
 		//GAME OVER Flag
 		this.gameOver = false
 		// 60-second play clock
-		scoreConfig.fixedWidth = 0
-		this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-			this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5)
-			this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5)
-			this.gameOver = true
-		}, null, this)
+		// scoreConfig.fixedWidth = 0
+		// this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
+		// 	this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5)
+		// 	this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5)
+		// 	this.gameOver = true
+		// }, null, this)
+		this.remainingTime = game.settings.gameTimer; // Start with the configured timer value
+        this.timerText = this.add.text(
+			game.config.width - borderUISize - borderPadding - 150, // Adjusted x-coordinate
+			borderUISize + borderPadding * 2,
+			`Time: ${(this.remainingTime / 1000).toFixed(1)}`,
+			{
+				fontFamily: 'Courier',
+				fontSize: '28px',
+				color: '#FFF',
+				backgroundColor: '#000'
+			}
+		);
+		
+
+        // Timer that ticks down
+        this.timerEvent = this.time.addEvent({
+            delay: 100,
+            callback: this.updateTimer,
+            callbackScope: this,
+            loop: true
+        });
 
 
 		//intialize particle effect
@@ -95,25 +116,53 @@ class Play extends Phaser.Scene {
 		// check collisions and play particle effect
 		if(this.checkCollision(this.p1Rocket, this.ship03)) {
 			this.p1Rocket.reset()
+			this.adjustTimer(3000); // Add 3 seconds
+
 			this.shipExplode(this.ship03)
-			console.log(this.ship03)
 			this.explode.emitParticleAt(this.ship03.x,this.ship03.y)   
 		  }
 		  if (this.checkCollision(this.p1Rocket, this.ship02)) {
 			this.p1Rocket.reset()
+			this.adjustTimer(4000); //add 4 seconds
+
 			this.shipExplode(this.ship02)
 			this.explode.emitParticleAt(this.ship02.x,this.ship02.y)   
 
 		  }
 		  if (this.checkCollision(this.p1Rocket, this.ship01)) {
 			this.p1Rocket.reset()
+			this.adjustTimer(5000); //add 5 seconds
+
 			this.shipExplode(this.ship01)
 			this.explode.emitParticleAt(this.ship01.x,this.ship01.y)   
 
 		  }
-		  
+		  if (this.p1Rocket.y <= borderUISize * 3 + borderPadding && this.p1Rocket.isFiring) {
+            this.adjustTimer(-3000); //deduct 3 seconds
+            this.p1Rocket.reset();
+        }
 		  
 	}
+	updateTimer() {
+        if (!this.gameOver) {
+            this.remainingTime -= 100;
+            this.timerText.setText(`Time: ${(this.remainingTime / 1000).toFixed(1)}`);
+
+            if (this.remainingTime <= 0) {
+                this.timerEvent.remove();
+				this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER').setOrigin(0.5)
+				this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu').setOrigin(0.5)   
+				this.gameOver = true;
+            }
+        }
+    }
+
+    adjustTimer(amount) {
+        this.remainingTime += amount;
+        if (this.remainingTime < 0) {
+            this.remainingTime = 0; //prevent negative time
+        }
+    }
 	checkCollision(rocket, ship) {
 		// simple AABB checking
 		if (rocket.x < ship.x + ship.width && 
