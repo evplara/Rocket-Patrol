@@ -1,7 +1,9 @@
 class Play extends Phaser.Scene {
 	constructor(){
 		super('playScene');
+		
 	}
+	
 	create(){
 		//place tile sprite
 		this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0)
@@ -49,16 +51,38 @@ class Play extends Phaser.Scene {
 			this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5)
 			this.gameOver = true
 		}, null, this)
+
+
+		//intialize particle effect
+		this.explode = this.add.particles(0, 0, 'spark', {
+            
+            angle: { start: 0, end: 360, steps: 32 },
+            lifespan: 1500,
+            speed: 400,
+            quantity: 32,
+            scale: { start: 0.5, end: 0 },
+            emitting: false
+        });
+		//initialize and play background music
+		var music = this.sound.add('bckgrd')
+		music.play()
+
+
 	}
 
 
 	update() {
 		  //check key input for restart
+
 		if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyRESET)) {
 			this.scene.restart()
+			//stop music after restart
+			this.sound.get('bckgrd').stop()
 		}
 		if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
 			this.scene.start("menuScene")
+			//stop music after restart
+			this.sound.get('bckgrd').stop()
 		  }
 		this.starfield.tilePositionX -= 4;
 		if(!this.gameOver) {               
@@ -66,20 +90,28 @@ class Play extends Phaser.Scene {
 			this.ship01.update()           //update spaceships (x3)
 			this.ship02.update()
 			this.ship03.update()
+			
 		} 
-		// check collisions
+		// check collisions and play particle effect
 		if(this.checkCollision(this.p1Rocket, this.ship03)) {
 			this.p1Rocket.reset()
-			this.shipExplode(this.ship03)   
+			this.shipExplode(this.ship03)
+			console.log(this.ship03)
+			this.explode.emitParticleAt(this.ship03.x,this.ship03.y)   
 		  }
 		  if (this.checkCollision(this.p1Rocket, this.ship02)) {
 			this.p1Rocket.reset()
 			this.shipExplode(this.ship02)
+			this.explode.emitParticleAt(this.ship02.x,this.ship02.y)   
+
 		  }
 		  if (this.checkCollision(this.p1Rocket, this.ship01)) {
 			this.p1Rocket.reset()
 			this.shipExplode(this.ship01)
+			this.explode.emitParticleAt(this.ship01.x,this.ship01.y)   
+
 		  }
+		  
 		  
 	}
 	checkCollision(rocket, ship) {
@@ -109,4 +141,6 @@ class Play extends Phaser.Scene {
 		this.scoreLeft.text = this.p1Score;
 		this.sound.play('sfx-explosion');
 	  }
+	  
+
 }

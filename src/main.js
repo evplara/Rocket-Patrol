@@ -7,7 +7,7 @@ let config = {
 let game = new Phaser.Game(config)
 
 //reserve keyboard bindings
-let keyFIRE, keyRESET, keyLEFT, keyRIGHT
+let keyFIRE, keyRESET, keyLEFT, keyRIGHT, keyDOWN, keyUP
 
 
 //UI Sizes

@@ -7,10 +7,13 @@ class Menu extends Phaser.Scene {
 		this.load.audio('sfx-select', './assets/sfx-select.wav')
 		this.load.audio('sfx-explosion', './assets/sfx-explosion.wav')
 		this.load.audio('sfx-shot', './assets/sfx-shot.wav')
+		this.load.audio('bckgrd', './assets/tubebackr & Tetuano - Spark.mp3')// Audio credits Music track: Spark by tubebackr & Tetuano Source: https://freetouse.com/music Royalty Free Background Music
 		//load images/tile sprites
 		this.load.image('rocket', './assets/rocket.png')
 		this.load.image('spaceship', './assets/spaceship.png')
 		this.load.image('starfield', './assets/starfield.png')
+		this.load.image('spark', './assets/spark.png') //Created By myself
+
 		// load spritesheet
 		this.load.spritesheet('explosion', './assets/explosion.png', {
 			frameWidth: 64,
@@ -38,19 +41,42 @@ class Menu extends Phaser.Scene {
 			},
 			fixedWidth: 0
 		}
-		this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL', menuConfig).setOrigin(0.5)
-		this.add.text(game.config.width/2, game.config.height/2, 'Use ←→ arrows to move & (F) to fire', menuConfig).setOrigin(0.5)
+		this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL', menuConfig).setOrigin(0.5,2)
+		this.add.text(game.config.width/2, game.config.height/2, 'Use ←→ arrows to move & (F) to fire', menuConfig).setOrigin(0.5, 1.5)
 		menuConfig.backgroundColor = '#00FF00'
 		menuConfig.color = '#000'
-		this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press ← for Novice or → for Expert', menuConfig).setOrigin(0.5)
+		this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press ← for Novice or → for Expert\n Press ↓ (Novice) or ↑(Expert)\n with  mouse controls', menuConfig).setOrigin(0.5)
 		// this.add.text(20, 20, "Rocket Patrol Menu");
 		// this.scene.start("playScene")
 
 		//define keys
 		keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT)
 		keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT)
+		keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
+		keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP)
 	}
 	update() {
+		//mouse control modes
+		if (Phaser.Input.Keyboard.JustDown(keyDOWN)){
+			game.settings = {
+				mouseMode: true,
+				spaceshipSpeed: 3,
+				gameTimer:60000
+			}
+			this.sound.play('sfx-select')
+			this.scene.start('playScene')
+		}
+		if (Phaser.Input.Keyboard.JustDown(keyUP)){
+			game.settings = {
+				mouseMode: true,
+				spaceshipSpeed: 4,
+				gameTimer:45000
+			}
+			this.sound.play('sfx-select')
+			this.scene.start('playScene')
+		}
+
+		//keyboard controls modes
 		if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
 		  // easy mode
 		  game.settings = {
