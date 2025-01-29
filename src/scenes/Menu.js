@@ -68,7 +68,6 @@ class Menu extends Phaser.Scene {
 		if (Phaser.Input.Keyboard.JustDown(keyT)) {
 			this.rocketMoveAfterFired = !this.rocketMoveAfterFired;
 			this.toggleText.setText(`Rocket Moves After Fire: ${this.rocketMoveAfterFired}`);
-			console.log(this.rocketMoveAfterFired)
 	}
 
 		

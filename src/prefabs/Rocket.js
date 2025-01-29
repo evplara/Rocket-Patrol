@@ -12,12 +12,11 @@ class Rocket extends Phaser.GameObjects.Sprite {
 	  //define mouse control mode
 	  this.mouse = game.settings.mouseMode
 	  this.rocketMove = game.settings.allowRocketMove
-	  console.log(this.rocketMove)
 	}
 
 
 	update(){
-		// console.log(this.rocketMove)
+		
 		//mouse controls
 		const pointer = this.scene.input.activePointer;
 		if (this.mouse){
