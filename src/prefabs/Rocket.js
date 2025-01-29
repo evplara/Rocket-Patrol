@@ -8,17 +8,45 @@ class Rocket extends Phaser.GameObjects.Sprite {
 	  this.isFiring = false;
 	  this.moveSpeed = 2;
 	  this.sfxShot = scene.sound.add('sfx-shot');
+	  this.scene = scene
+	  //define mouse control mode
+	  this.mouse = game.settings.mouseMode
+	  this.rocketMove = game.settings.allowRocketMove
 	}
 
+
 	update(){
+		
+		//mouse controls
+		const pointer = this.scene.input.activePointer;
+		if (this.mouse){
+			if(!this.isFiring){
+				this.x = pointer.worldX 
+			}
+			if(pointer.isDown && !this.isFiring){
+				this.isFiring = true
+				this.sfxShot.play()
+			}
+			if (this.rocketMove && this.isFiring) {
+				this.x = pointer.worldX
+		}
+		
+		}
+		if (this.rocketMove && this.isFiring) {
+			if (keyLEFT.isDown && this.x >= borderUISize + this.width) {
+				this.x -= this.moveSpeed;
+			} else if (keyRIGHT.isDown && this.x <= game.config.width - borderUISize - this.width) {
+				this.x += this.moveSpeed;
+			}
+		}
 		if(!this.isFiring) {
-			if (keyLEFT.isDown && this.x >= borderUISize + this.width){
+			if (keyLEFT.isDown && this.x >= borderUISize + this.width ){
 				this.x -= this.moveSpeed
 			} else if(keyRIGHT.isDown && this.x <= game.config.width - borderUISize- this.width) {
 				this.x += this.moveSpeed
 			}
 		}
-		
+		//keyboard controls
 		  //fire button
 		  if (Phaser.Input.Keyboard.JustDown(keyFIRE) && !this.isFiring) {
 			this.isFiring = true
@@ -33,6 +61,9 @@ class Rocket extends Phaser.GameObjects.Sprite {
 		if (this.y <= borderUISize * 3 + borderPadding){
 			this.isFiring = false
 			this.y = game.config.height - borderUISize - borderPadding
+			this.scene.adjustTimer(-10000)
+
+	 
 		}
 	}
 
@@ -40,5 +71,6 @@ class Rocket extends Phaser.GameObjects.Sprite {
 	reset(){
 		this.isFiring = false;
 		this.y = game.config.height - borderUISize - borderPadding;
+
 	}
   }
