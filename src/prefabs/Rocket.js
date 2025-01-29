@@ -11,23 +11,35 @@ class Rocket extends Phaser.GameObjects.Sprite {
 	  this.scene = scene
 	  //define mouse control mode
 	  this.mouse = game.settings.mouseMode
-		
+	  this.rocketMove = game.settings.allowRocketMove
+	  console.log(this.rocketMove)
 	}
 
 
 	update(){
-		
+		// console.log(this.rocketMove)
 		//mouse controls
 		const pointer = this.scene.input.activePointer;
-		if (this.mouse == true){
-		if(!this.isFiring){
-			this.x = pointer.worldX 
+		if (this.mouse){
+			if(!this.isFiring){
+				this.x = pointer.worldX 
+			}
+			if(pointer.isDown && !this.isFiring){
+				this.isFiring = true
+				this.sfxShot.play()
+			}
+			if (this.rocketMove && this.isFiring) {
+				this.x = pointer.worldX
 		}
-		if(pointer.isDown && !this.isFiring){
-
-			this.isFiring = true
-			this.sfxShot.play()
-		}}
+		
+		}
+		if (this.rocketMove && this.isFiring) {
+			if (keyLEFT.isDown && this.x >= borderUISize + this.width) {
+				this.x -= this.moveSpeed;
+			} else if (keyRIGHT.isDown && this.x <= game.config.width - borderUISize - this.width) {
+				this.x += this.moveSpeed;
+			}
+		}
 		if(!this.isFiring) {
 			if (keyLEFT.isDown && this.x >= borderUISize + this.width ){
 				this.x -= this.moveSpeed

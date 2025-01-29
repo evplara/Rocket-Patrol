@@ -54,14 +54,31 @@ class Menu extends Phaser.Scene {
 		keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT)
 		keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
 		keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP)
+		keyT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);	
+		
+		this.rocketMoveAfterFired = false; 
+		//display toggle option
+		this.toggleText = this.add.text(game.config.width / 2, game.config.height / 2 + 100,
+			`Rocket Moves After Fire: ${this.rocketMoveAfterFired}`,
+			{ fontFamily: 'Courier', fontSize: '24px', color: '#FFF' }
+		).setOrigin(0.5);
+		
 	}
 	update() {
+		if (Phaser.Input.Keyboard.JustDown(keyT)) {
+			this.rocketMoveAfterFired = !this.rocketMoveAfterFired;
+			this.toggleText.setText(`Rocket Moves After Fire: ${this.rocketMoveAfterFired}`);
+			console.log(this.rocketMoveAfterFired)
+	}
+
+		
 		//mouse control modes
 		if (Phaser.Input.Keyboard.JustDown(keyDOWN)){
 			game.settings = {
 				mouseMode: true,
 				spaceshipSpeed: 3,
-				gameTimer:60000
+				gameTimer:60000,
+				allowRocketMove: this.rocketMoveAfterFired
 			}
 			this.sound.play('sfx-select')
 			this.scene.start('playScene')
@@ -70,7 +87,8 @@ class Menu extends Phaser.Scene {
 			game.settings = {
 				mouseMode: true,
 				spaceshipSpeed: 4,
-				gameTimer:45000
+				gameTimer:45000,
+				allowRocketMove: this.rocketMoveAfterFired
 			}
 			this.sound.play('sfx-select')
 			this.scene.start('playScene')
@@ -81,8 +99,9 @@ class Menu extends Phaser.Scene {
 		  // easy mode
 		  game.settings = {
 			spaceshipSpeed: 3,
-			gameTimer: 60000    
-		  }
+			gameTimer: 60000, 
+            allowRocketMove: this.rocketMoveAfterFired
+		}
 		  this.sound.play('sfx-select')
 		  this.scene.start('playScene')    
 		}
@@ -90,8 +109,9 @@ class Menu extends Phaser.Scene {
 		  // hard mode
 		  game.settings = {
 			spaceshipSpeed: 4,
-			gameTimer: 5000    
-		  }
+			gameTimer: 5000,
+            allowRocketMove: this.rocketMoveAfterFired
+		}
 		  this.sound.play('sfx-select')
 		  this.scene.start('playScene')    
 		}
